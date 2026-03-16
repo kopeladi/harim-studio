@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harim Studio — בוט וואטסאפ | דמו</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #030000;
+      --surface:    #2B2B2B;
+      --border:     #333333;
+      --green:      #63DD00;
+      --green-dim:  rgba(99,221,0,0.12);
+      --purple:     #845AEC;
+      --purple-dim: rgba(132,90,236,0.15);
+      --text:       #FFFFFF;
+      --muted:      #D5D5D5;
+      --muted2:     #888888;
+      --wa-bg:      #111008;
+      --success:    #25D366;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(ellipse at 5% 5%,  rgba(99,221,0,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 95% 95%, rgba(132,90,236,0.07) 0%, transparent 50%);
+    }
+
+    /* ── HEADER ──────────────────────────────── */
+    .app-header {
+      flex-shrink: 0;
+      background: #0A0A0A;
+      padding: 0 36px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      z-index: 20;
+    }
+
+    .hdr-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hdr-logo {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900;
+      color: #030000;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .hdr-title {
+      font-size: 18px; font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .hdr-title span {
+      color: var(--green);
+    }
+
+    .hdr-sub {
+      font-size: 11.5px; color: var(--muted2);
+      font-weight: 400;
+      margin-right: 6px;
+    }
+
+    .live-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(37,211,102,0.1);
+      border: 1px solid rgba(37,211,102,0.3);
+      color: var(--success);
+      font-size: 11.5px; font-weight: 700;
+      padding: 5px 14px; border-radius: 100px;
+      letter-spacing: 0.5px;
+    }
+
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(37,211,102,0); }
+    }
+
+    /* ── MAIN GRID ───────────────────────────── */
+    .main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      overflow: hidden;
+    }
+
+    /* ── PHONE AREA ──────────────────────────── */
+    .phone-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent, transparent 40px,
+          rgba(99,221,0,0.018) 40px, rgba(99,221,0,0.018) 41px
+        );
+    }
+
+    /* Phone shell */
+    .phone {
+      width: 336px;
+      height: calc(100vh - 60px - 48px);
+      max-height: 680px;
+      min-height: 520px;
+      background: #111;
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 9px #0A0A0A,
+        0 0 0 10px #1A1A1A,
+        0 28px 70px rgba(0,0,0,0.7),
+        0 0 60px rgba(99,221,0,0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status bar */
+    .status-bar {
+      background: var(--green);
+      padding: 10px 22px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #030000;
+      font-size: 11px; font-weight: 700;
+      flex-shrink: 0;
+      direction: ltr;
+    }
+
+    /* Chat header (WhatsApp-style, green) */
+    .chat-header {
+      background: var(--green);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .back-chevron {
+      color: rgba(3,0,0,0.6);
+      font-size: 22px; font-weight: 300;
+      cursor: pointer; line-height: 1;
+    }
+
+    .bot-ava {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #030000;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900;
+      color: var(--green);
+      flex-shrink: 0;
+      border: 2px solid rgba(3,0,0,0.25);
+    }
+
+    .bot-meta { flex: 1; }
+
+    .bot-name {
+      font-size: 14px; font-weight: 800;
+      color: #030000;
+    }
+
+    .bot-online {
+      font-size: 11px; color: rgba(3,0,0,0.6);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .online-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #030000;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulseBlack {
+      0%,100% { box-shadow: 0 0 0 0 rgba(3,0,0,0.3); }
+      50%      { box-shadow: 0 0 0 4px rgba(3,0,0,0); }
+    }
+
+    .hdr-actions {
+      display: flex; gap: 14px;
+      color: rgba(3,0,0,0.55);
+      font-size: 17px;
+    }
+
+    /* Chat messages area */
+    .chat-msgs {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 10px;
+      background: var(--wa-bg);
+      background-image:
+        radial-gradient(circle at 50% 50%, rgba(99,221,0,0.02) 0%, transparent 70%);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-msgs::-webkit-scrollbar { width: 3px; }
+    .chat-msgs::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+
+    /* Date divider */
+    .date-divider {
+      text-align: center;
+      margin: 6px 0 10px;
+    }
+    .date-divider span {
+      background: rgba(255,255,255,0.07);
+      font-size: 11px; color: var(--muted2);
+      padding: 4px 12px; border-radius: 100px;
+    }
+
+    /* Message rows */
+    .msg-row { display: flex; flex-direction: column; }
+    .msg-row.bot      { align-items: flex-start; }
+    .msg-row.customer { align-items: flex-end; }
+    .msg-row.system   { align-items: center; margin: 8px 0; }
+
+    /* Bubbles */
+    .bubble {
+      max-width: 82%;
+      padding: 8px 12px 5px;
+      border-radius: 8px;
+      word-wrap: break-word;
+      white-space: pre-line;
+      line-height: 1.5;
+      font-size: 13.5px;
+      margin-bottom: 2px;
+      position: relative;
+      animation: bubbleIn 0.22s cubic-bezier(.2,.8,.4,1) both;
+    }
+
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(7px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .bot .bubble {
+      background: var(--surface);
+      color: var(--text);
+      border-top-right-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .customer .bubble {
+      background: var(--purple);
+      color: #fff;
+      border-top-left-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .system-pill {
+      background: rgba(99,221,0,0.1);
+      border: 1px solid rgba(99,221,0,0.25);
+      color: var(--green);
+      font-size: 11.5px; font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .msg-meta {
+      display: flex; align-items: center;
+      gap: 4px; justify-content: flex-end;
+      margin-top: 3px;
+    }
+
+    .msg-time { font-size: 10.5px; color: rgba(255,255,255,0.35); }
+    .bot .msg-time { color: var(--muted2); }
+    .ticks { font-size: 11px; color: var(--green); }
+
+    /* Typing */
+    .typing-row {
+      display: flex;
+      align-items: flex-start;
+      animation: bubbleIn 0.2s both;
+      margin-bottom: 2px;
+    }
+
+    .typing-bub {
+      background: var(--surface);
+      border-radius: 8px;
+      border-top-right-radius: 2px;
+      padding: 11px 14px;
+      display: flex; gap: 5px; align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .tdot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      animation: tdot 1.2s infinite ease-in-out;
+    }
+    .tdot:nth-child(2) { animation-delay: .18s; }
+    .tdot:nth-child(3) { animation-delay: .36s; }
+
+    @keyframes tdot {
+      0%,60%,100% { transform: translateY(0);    opacity: .5; }
+      30%          { transform: translateY(-5px); opacity: 1;  }
+    }
+
+    /* Empty state */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+      padding: 20px;
+    }
+    .empty-state .e-icon { font-size: 42px; opacity: .8; }
+    .empty-state h3 { font-size: 14px; font-weight: 700; color: var(--muted); }
+    .empty-state p  { font-size: 12.5px; color: var(--muted2); line-height: 1.6; }
+
+    /* ── QR STRIP — פס נפרד מעל שורת הקלט ── */
+    .qr-strip {
+      flex-shrink: 0;
+      display: none;           /* מוסתר כשריק */
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 8px;
+      padding: 8px 12px 10px;
+      background: #181818;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.2s ease both;
+    }
+    .qr-strip:not(:empty) { display: flex; }
+    .qr-strip::-webkit-scrollbar { display: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .qr-chip {
+      flex-shrink: 0;
+      border: 1.5px solid var(--green);
+      background: transparent;
+      color: var(--green);
+      font-family: 'Heebo', sans-serif;
+      font-size: 12.5px; font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .qr-chip:hover, .qr-chip:active {
+      background: var(--green);
+      color: #030000;
+    }
+
+    /* Input bar */
+    .chat-input {
+      background: #1A1A1A;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .emoji-btn {
+      background: none; border: none;
+      font-size: 20px; cursor: pointer;
+      opacity: .6;
+    }
+
+    .input-field {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      outline: none;
+      border-radius: 22px;
+      padding: 8px 14px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 16px; /* 16px מונע zoom ב-iOS */
+      color: var(--text);
+      direction: rtl;
+      -webkit-appearance: none;
+    }
+    .input-field::placeholder { color: #555; }
+
+    .send-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--green);
+      border: none;
+      color: #030000;
+      font-size: 16px; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .send-btn:hover { opacity: 0.88; transform: scale(1.05); }
+
+    /* ── SIDEBAR PANEL ───────────────────────── */
+    .panel {
+      background: #0D0D0D;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-top {
+      padding: 22px 20px 0;
+      flex-shrink: 0;
+    }
+
+    .panel-eyebrow {
+      font-size: 10px; font-weight: 800;
+      color: var(--green);
+      text-transform: uppercase; letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .panel-intro {
+      background: var(--green-dim);
+      border: 1px solid rgba(99,221,0,0.2);
+      border-radius: 12px;
+      padding: 13px 15px;
+      margin-bottom: 16px;
+    }
+
+    .panel-intro p {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .panel-intro strong {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .section-label {
+      font-size: 10px; font-weight: 800;
+      color: var(--muted2); text-transform: uppercase;
+      letter-spacing: 1.5px; margin-bottom: 10px;
+    }
+
+    /* Scenario list */
+    .scenarios {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px 16px;
+    }
+
+    .scenarios::-webkit-scrollbar { width: 3px; }
+    .scenarios::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .s-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 13px;
+      margin-bottom: 7px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: right;
+      transition: all 0.18s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .s-btn:hover {
+      border-color: var(--green);
+      background: rgba(99,221,0,0.06);
+      transform: translateX(2px);
+    }
+
+    .s-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .s-btn.active .s-label  { color: #030000; }
+    .s-btn.active .s-preview { color: rgba(3,0,0,0.55); }
+    .s-btn.active .s-icon { filter: none; }
+
+    .s-icon {
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .s-text { flex: 1; }
+
+    .s-label {
+      display: block;
+      font-size: 13px; font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1px;
+    }
+
+    .s-preview {
+      font-size: 11px; color: var(--muted2);
+    }
+
+    /* Panel footer */
+    .panel-footer {
+      flex-shrink: 0;
+      padding: 14px 20px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .reset-btn {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      color: var(--muted2);
+      font-family: 'Heebo', sans-serif;
+      font-size: 12.5px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      margin-bottom: 14px;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 20px; font-weight: 900;
+      color: var(--green);
+      display: block;
+    }
+
+    .stat-lbl {
+      font-size: 10px; color: var(--muted2);
+      line-height: 1.4;
+    }
+
+    /* ── MOBILE ──────────────────────────────── */
+    @media (max-width: 700px) {
+
+      html, body {
+        height: 100dvh;
+        overflow: hidden;
+      }
+
+      /* ── HEADER — שורה אחת, לא נשבר ── */
+      .app-header {
+        padding: 0 14px;
+        height: 46px;
+        flex-shrink: 0;
+      }
+      .hdr-title { font-size: 14px; white-space: nowrap; }
+      .hdr-sub   { display: none; }
+      .live-badge { font-size: 10px; padding: 4px 9px; gap: 4px; }
+
+      /* ── MAIN — עמודה שממלאת את שאר המסך ── */
+      .main {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* ── PANEL — רק פס כפתורים, ללא footer ── */
+      .panel {
+        order: 1;
+        flex-shrink: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .panel-top    { padding: 8px 16px 2px; }
+      .panel-eyebrow { margin-bottom: 2px; }
+      .panel-intro  { display: none; }
+      .section-label { display: none; }
+      .panel-footer  { display: none; }   /* מסתיר stats + reset */
+
+      /* תרחישים — פס אופקי סחיר */
+      .scenarios {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        padding: 6px 16px 12px;
+      }
+      .scenarios::-webkit-scrollbar { display: none; }
+
+      .s-btn {
+        margin-bottom: 0;
+        padding: 8px 13px;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        width: auto;
+        border-radius: 10px;
+      }
+      .s-preview { display: none; }
+      .s-label   { font-size: 13px; white-space: nowrap; }
+      .s-icon    { font-size: 17px; }
+
+      /* ── PHONE AREA — padding צדדי קטן לפינות מעוגלות ── */
+      .phone-area {
+        order: 2;
+        flex: 1;
+        min-height: 0;
+        padding: 0 8px 8px;
+        background-image: none;
+        display: flex;
+        align-items: stretch;
+      }
+
+      /* ── PHONE — פינות עליונות מעוגלות, ללא bezel ── */
+      .phone {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        min-height: 0;
+        border-radius: 20px 20px 12px 12px;
+        box-shadow:
+          0 -4px 24px rgba(99,221,0,0.12),
+          0 0 0 1px rgba(99,221,0,0.2);
+        border-top: none;
+        overflow: hidden;
+      }
+
+      /* QR strip — כבר flex ומסודר בכל גדלי מסך */
+      .qr-strip { padding: 8px 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="app-header">
+    <div class="hdr-brand">
+      <div class="hdr-logo">H</div>
+      <div class="hdr-title">HARIM<span> BOT</span> <span class="hdr-sub">— הדגמה אינטראקטיבית</span></div>
+    </div>
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      Live Demo
+    </div>
+  </header>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+
+    <!-- ── PHONE ── -->
+    <div class="phone-area">
+      <div class="phone">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span id="clockDisplay">10:30</span>
+          <span>▐▐▐ ᯤ 🔋</span>
+        </div>
+
+        <!-- Chat header -->
+        <div class="chat-header">
+          <span class="back-chevron">‹</span>
+          <div class="bot-ava">H</div>
+          <div class="bot-meta">
+            <div class="bot-name">Harim Studio 💪</div>
+            <div class="bot-online">
+              <span class="online-dot"></span>מחובר עכשיו
+            </div>
+          </div>
+          <div class="hdr-actions">
+            <span>📹</span>
+            <span>📞</span>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-msgs" id="chatMsgs">
+          <div class="empty-state" id="emptyState">
+            <div class="e-icon">💪</div>
+            <h3>בחרו תרחיש לדמו</h3>
+            <p>לחצו על אחד הכפתורים<br>כדי להפעיל שיחה לדוגמה</p>
+          </div>
+        </div>
+
+        <!-- Quick Replies Strip — תמיד מעל שורת הקלט -->
+        <div class="qr-strip" id="qrStrip"></div>
+
+        <!-- Input -->
+        <div class="chat-input">
+          <button class="emoji-btn">😊</button>
+          <input class="input-field" type="text" placeholder="כתבו הודעה..." id="userInput">
+          <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SIDEBAR PANEL ── -->
+    <aside class="panel">
+
+      <div class="panel-top">
+        <p class="panel-eyebrow">בחרי תרחיש</p>
+        <div class="panel-intro">
+          <p>לחצו כדי לראות איך <strong>הבוט של Harim Studio</strong> עונה ללקוחות — בדיוק כפי שזה ייראה בוואטסאפ 👇</p>
+        </div>
+        <p class="section-label">תרחישי שיחה</p>
+      </div>
+
+      <div class="scenarios" id="scenariosList"></div>
+
+      <div class="panel-footer">
+        <button class="reset-btn" onclick="resetChat()">↺ &nbsp;התחלה מחדש</button>
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-num">24/7</span>
+            <span class="stat-lbl">מענה מיידי<br>ללא הפסקה</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num">15</span>
+            <span class="stat-lbl">תרחישי שיחה<br>מוכנים</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <script>
+    // ─── Clock ───────────────────────────────────
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clockDisplay').textContent =
+        now.getHours().toString().padStart(2,'0') + ':' +
+        now.getMinutes().toString().padStart(2,'0');
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // ─── Scenarios ───────────────────────────────
+    const SCENARIOS = [
+      {
+        id: 'welcome', icon: '👋', label: 'ברכת פתיחה',
+        preview: '"היי, מה שלומכם?"',
+        convo: [
+          { from: 'customer', text: 'היי! 👋' },
+          { from: 'bot', typing: 1400,
+            text: 'היי ❤️ מה שלומך?\n\nאני הבוט של שני — אענה מיד על רוב השאלות.\n\nבמה אוכל לעזור?',
+            qr: ['💰 מחירים ומנויים', '🕐 שעות ואימונים', '🏥 קופות חולים', '📋 שאלה על המנוי שלי']
+          },
+        ]
+      },
+      {
+        id: 'intro', icon: '🏠', label: 'על הסטודיו',
+        preview: '"מה יש אצלכם?"',
+        convo: [
+          { from: 'customer', text: 'ספרו לי על הסטודיו 🙏' },
+          { from: 'bot', typing: 1200,
+            text: 'קומפלקס אימונים בחד נס 🔥\nכל מה שהגוף והנפש צריכים —\nגם חדר כושר וגם פילאטיס מכשירים במקום אחד בעיצוב מדהים ✨',
+            qr: ['💰 מחירים ומנויים', '🔥 על הVIBE', '✅ רוצה להירשם!']
+          },
+        ]
+      },
+      {
+        id: 'prices', icon: '💰', label: 'מחירים ומנויים',
+        preview: '"כמה עולה מנוי?"',
+        convo: [
+          { from: 'customer', text: 'כמה עולה מנוי? 🙏' },
+          { from: 'bot', typing: 1000,
+            text: 'טווח מחירים נע בין 230–700 ₪ ותלוי בכמות הפעמים בשבוע 💰\n\nבאיזה ימים נוח לך יותר להתאמן והאם יותר בשעות הבוקר או הערב?',
+            qr: ['☀️ בעיקר בוקר', '🌙 בעיקר ערב', '📅 גמיש/ה בימים', 'עוד לא יודע/ת']
+          },
+          { from: 'customer', text: 'בעיקר ערב', delay: 600 },
+          { from: 'bot', typing: 1100,
+            text: 'מעולה! יש אצלנו שיעורי ערב כמעט כל יום 🌙\n\nכמה פעמים בשבוע חושב/ת להגיע?',
+            qr: ['פעם אחת', 'פעמיים', '3 פעמים ומעלה', '✅ רוצה להירשם!']
+          },
+        ]
+      },
+      {
+        id: 'vibe', icon: '🔥', label: 'סוגי אימונים — VIBE',
+        preview: '"מה יש אצלכם?"',
+        convo: [
+          { from: 'customer', text: 'מה יש אצלכם בדיוק? 🤔' },
+          { from: 'bot', typing: 1600,
+            text: 'יש אצלנו ב-Harim:\n\nאווירה ממכרת, פלייסילטים מחשמלים, VIBE 🔥\nצוות ברמה גבוהה עם יחס בגובה העיניים 🎵\n\n🧘 פילאטיס מכשירים — חיזוק, יציבה, גמישות. לכל הרמות.\n🏋️ אימון פונקציונלי / אימוני כח — לכוח, סיבולת, שריפת שומן.\n💪 חדר כושר — שמכירים אותך, בונים יחד תכנית אימונים מדויקת לפי המטרה.\n\nשעות: בוקר / צהריים / ערב, א׳–שישי.',
+            qr: ['📅 שלחי לוז מלא', '💰 מחירים ומנויים', '✅ רוצה לנסות!', '📞 שוחחו עם שני']
+          },
+        ]
+      },
+      {
+        id: 'pilates', icon: '🧘', label: 'פילאטיס מכשירים',
+        preview: '"ספרו על פילאטיס"',
+        convo: [
+          { from: 'customer', text: 'ספרו לי על פילאטיס המכשירים 🧘' },
+          { from: 'bot', typing: 1400,
+            text: 'פילאטיס מכשירים אצלנו זה חוויה אחרת לגמרי 🧘‍♀️\n\nקבוצות של עד 8 מתאמנים —\nמחזק ליבה, משפר יציבה, ונותן תחושה מדהימה בגוף ובחיים בכלל.\n\nמותאם לכל הרמות עם יחס אישי והכרות עמוקה ❤️',
+            qr: ['💰 כמה עולה?', '✅ רוצה לנסות!', '📞 שוחחו עם שני']
+          },
+        ]
+      },
+      {
+        id: 'membership', icon: '📋', label: 'כללי מנוי',
+        preview: '"איך עובד המנוי?"',
+        convo: [
+          { from: 'customer', text: 'איך עובד המנוי? מתחדש אוטומטית?' },
+          { from: 'bot', typing: 1500,
+            text: 'המנוי מתחדש אוטומטית בכל ראשון לחודש 📅\n\nהחיוב הראשון הוא יחסי — עד ה-1 לחודש הבא.\nאחר כך חיוב קבוע בכל 1 לחודש.\n\n💡 ללא התחייבות!\n\nרוצות לבטל או לשנות מנוי? חשוב לעדכן עד שבועיים לפני ה-1 לחודש.\nלא ניתן לזכות על חיוב שכבר בוצע — כדאי להתארגן מראש ✨',
+            qr: ['ומה עם שבועיים?', '📋 כללי ביטול אימון', '💰 מחירים ומנויים', '✅ רוצה להירשם!']
+          },
+        ]
+      },
+      {
+        id: 'cancel', icon: '⏰', label: 'ביטול אימון',
+        preview: '"איך מבטלים?"',
+        convo: [
+          { from: 'customer', text: 'לא יכול/ה להגיע לאימון, איך מבטלים? 😔' },
+          { from: 'bot', typing: 1200,
+            text: 'כללי הביטול אצלנו פשוטים 📋\n\n✅ אפשר להירשם לאימון בכל עת\n❗ ההרשמה נפתחת שבועיים קדימה\n\nאימון ערב — לבטל עד 4 שעות לפני\n❗ אימון בוקר — לבטל עד 12 שעות לפני\n\n⏰ ביטלת מאוחר?\nיש לך אפשרות להירשם לאימון אחר באותו היום ללא חיוב נוסף 🙌',
+            qr: ['💰 מחירים ומנויים', '🕐 שעות ואימונים', '📞 שוחחו עם שני']
+          },
+        ]
+      },
+      {
+        id: 'kupot', icon: '🏥', label: 'קופות חולים',
+        preview: '"מכבי מאשרת?"',
+        convo: [
+          { from: 'customer', text: 'יש לי מכבי — מאשרים?' },
+          { from: 'bot', typing: 1300,
+            text: 'קופות חולים? כן — אבל עם מגבלה אחת חשובה 👇\n\n✅ מכבי — כן, מאשרים\n❌ כללית / מאוחדת / לאומית — לא\n\n⚠️ חשוב: ההשתתפות של מכבי היא לחדר כושר בלבד.\nפילאטיס מכשירים לא נכלל — גם אם יש לך מכבי.',
+            qr: ['💰 מחירים ומנויים', '✅ רוצה להירשם!', '📞 שוחחו עם שני']
+          },
+        ]
+      },
+      {
+        id: 'handoff', icon: '🙋', label: 'העברה לשני',
+        preview: '"רוצה לדבר עם שני"',
+        convo: [
+          { from: 'customer', text: 'אני רוצה לדבר עם שני בבקשה 🙏' },
+          { from: 'bot', typing: 1000,
+            text: 'אני מעביר את ההודעה לשני הרים 💪🏻\nהיא תחזור אלייך ברגע שתסיים את הסשן בסטודיו ❤️\n\n📞 אפשר גם ישר: 052-4532215',
+            qr: ['🏠 חזרה לתפריט']
+          },
+          { from: 'system', typing: 1300,
+            text: '⚡ השיחה הועברה לשני — התראה נשלחה' },
+        ]
+      },
+      {
+        id: 'transfer', icon: '🔄', label: 'העברת מנוי',
+        preview: '"אפשר להעביר לאחות?"',
+        convo: [
+          { from: 'customer', text: 'אפשר להעביר את המנוי לאחות שלי?' },
+          { from: 'bot', typing: 1300,
+            text: 'המנוי הוא אישי ולא ניתן להעביר לאף אחד אחר 🙅‍♀️\nגם לא לאחות, חברה, או בת זוג — אפילו לשיעור אחד.\n\nזה כדי לשמור על האיכות והמקום בכל שיעור.',
+            qr: ['הבנתי, תודה 👍', '💰 מחירים ומנויים', '📞 שוחחו עם שני']
+          },
+        ]
+      },
+      {
+        id: 'freeze', icon: '🧊', label: 'הקפאת מנוי',
+        preview: '"רוצה להקפיא"',
+        convo: [
+          { from: 'customer', text: 'אני רוצה להקפיא את המנוי שלי 🙏' },
+          { from: 'bot', typing: 1400,
+            text: 'מקווה שתמשיך/י בתנועה כמה שניתן 💪\n\nרשמו לי כאן מאיזה תאריך ועד מתי תרצה/י שנקפיא.\n\nשני תאשר לך את זה בהקדם ❤️',
+            qr: ['📞 שוחחו עם שני']
+          },
+          { from: 'customer', text: 'מה-15 לחודש עד ה-1 לחודש הבא', delay: 800 },
+          { from: 'bot', typing: 1100,
+            text: 'קיבלנו! ✅ שני תאשר בהקדם ❤️',
+            qr: ['🏠 חזרה לתפריט']
+          },
+          { from: 'system', typing: 1200,
+            text: '⚡ בקשת הקפאה נשלחה לשני' },
+        ]
+      },
+      {
+        id: 'arbox', icon: '📱', label: 'תקלות Arbox',
+        preview: '"בעיה באפליקציה"',
+        convo: [
+          { from: 'customer', text: 'יש לי בעיה באפליקציית Arbox, לא יכולה להתחבר 😤' },
+          { from: 'bot', typing: 1300,
+            text: 'בואי ננסה לפתור את זה 🔧\n\nמה הבעיה בדיוק?',
+            qr: ['🔐 לא יכולה להתחבר', '📊 המכסה לא מתחדשת', '💳 עדכון כרטיס אשראי']
+          },
+          { from: 'customer', text: 'לא יכולה להתחבר', delay: 600 },
+          { from: 'bot', typing: 1100,
+            text: 'נסי לצאת ולהיכנס שוב 🔄\nודאי שאת משתמשת במייל שנרשמת איתו לסטודיו.\n\nאם זה לא עוזר — שני תפתור לך את זה תוך דקה!',
+            qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט']
+          },
+        ]
+      },
+      {
+        id: 'location', icon: '📍', label: 'מיקום וכניסה',
+        preview: '"איך מגיעים?"',
+        convo: [
+          { from: 'customer', text: 'איך מגיעים לסטודיו? ומה הקוד לכניסה?' },
+          { from: 'bot', typing: 1300,
+            text: 'הסטודיו נמצא בחד נס 📍\n\n🔑 קוד שער: **2580#**\n\n🛡️ יש לנו מקלט מסודר ובטוח בתוך הסטודיו (באזור השירותים) ❤️\n\nשעות: בוקר / צהריים / ערב, א׳–שישי.',
+            qr: ['🕐 שעות ואימונים', '💰 מחירים ומנויים', '📞 שוחחו עם שני']
+          },
+        ]
+      },
+      {
+        id: 'nutrition', icon: '🥗', label: 'ליווי תזונתי',
+        preview: '"יש ליווי תזונה?"',
+        convo: [
+          { from: 'customer', text: 'יש אצלכם ליווי תזונתי?' },
+          { from: 'bot', typing: 1400,
+            text: 'כן! יש לנו תכנית ליווי תזונתי מלאה 🥗\n\n✅ תכנית 60 יום:\n• מדידות אישיות בתחילה ובסיום\n• תפריט מותאם אישית\n• פגישות מעקב כל שבועיים\n\n💰 עלות: 1,200 ₪\n\nרוצה לשמוע יותר?',
+            qr: ['✅ רוצה פרטים!', '📞 שוחחו עם שני', '🏠 חזרה לתפריט']
+          },
+        ]
+      },
+      {
+        id: 'bring', icon: '🎒', label: 'מה להביא?',
+        preview: '"מה להביא לאימון?"',
+        convo: [
+          { from: 'customer', text: 'מה צריך להביא לאימון? זו הפעם הראשונה שלי 😊' },
+          { from: 'bot', typing: 1200,
+            text: 'כל הכבוד שמגיעים! 🎉\n\nמה להביא לאימון:\n💧 בקבוק מים (כי אין חדפ)\n🧦 אם בא לך אז גרביים (לפילאטיס)\n👟 נעליים סגורות (לחדר כושר)\n🛁 מגבת קטנה\nובגדים נוחים 😊\n\nהכל שם — הסטודיו מסודר ונקי ❤️',
+            qr: ['📍 מיקום וקוד כניסה', '💰 מחירים ומנויים', '✅ רוצה להירשם!']
+          },
+        ]
+      },
+    ];
+
+    // ─── Auto init message on load ───────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(async () => {
+        const emptyEl = document.getElementById('emptyState');
+        if (!emptyEl) return; // רק אם לא נבחר תרחיש
+        emptyEl.remove();
+        const box = document.getElementById('chatMsgs');
+        const typer = addTyping(box);
+        await sleep(1000);
+        typer.remove();
+        addBubble(box, {
+          from: 'bot',
+          text: 'היי ❤️ מה שלומך?\n\nאני הבוט של שני — אענה מיד על רוב השאלות.\n\nבמה אוכל לעזור?'
+        }, 0);
+        addQuickReplies(box, ['💰 מחירים ומנויים', '🕐 שעות ואימונים', '🏥 קופות חולים', '📋 שאלה על המנוי שלי']);
+      }, 600);
+    });
+
+    // ─── Build sidebar buttons ────────────────────
+    const list = document.getElementById('scenariosList');
+    SCENARIOS.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 's-btn';
+      btn.id = 'sb-' + s.id;
+      btn.innerHTML = `
+        <span class="s-icon">${s.icon}</span>
+        <span class="s-text">
+          <span class="s-label">${s.label}</span>
+          <span class="s-preview">${s.preview}</span>
+        </span>`;
+      btn.addEventListener('click', () => runScenario(s));
+      list.appendChild(btn);
+    });
+
+    // ─── Input / free typing ─────────────────────
+    const userInput = document.getElementById('userInput');
+    const sendBtn   = document.getElementById('sendBtn');
+
+    function sendUserMessage() {
+      const txt = userInput.value.trim();
+      if (!txt || busy) return;
+      userInput.value = '';
+
+      const emptyEl = document.getElementById('emptyState');
+      if (emptyEl) emptyEl.remove();
+
+      const box = document.getElementById('chatMsgs');
+      addBubble(box, { from: 'customer', text: txt }, 0);
+
+      // Simple auto-reply
+      document.getElementById('qrStrip').innerHTML = '';
+      setTimeout(async () => {
+        const typer = addTyping(box);
+        await sleep(1400);
+        typer.remove();
+        const reply = autoReply(txt);
+        addBubble(box, { from: 'bot', text: reply.text }, 1);
+        if (reply.qr) addQuickReplies(box, reply.qr);
+      }, 400);
+    }
+
+    sendBtn.addEventListener('click', sendUserMessage);
+    userInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendUserMessage(); });
+
+    function autoReply(txt) {
+      const t = txt.toLowerCase();
+      let result;
+
+      // ── תשובות ספציפיות לכפתורי QR (חייב להיות לפני keyword matching) ──
+
+      // ── קדימות גבוהה — תסריט 3 מנוי (לפני keyword גנרי) ──
+      if (["להעביר","אחות","חברה","במקומי","שתבוא","עברה","מישהי אחרת"].some(w => t.includes(w)))
+        result = { text: 'המנוי הוא אישי ולא ניתן להעביר לאף אחד אחר 🙅‍♀️\nגם לא לאחות, חברה, או בת זוג — אפילו לשיעור אחד.\n\nזה כדי לשמור על האיכות והמקום בכל שיעור.', qr: ['הבנתי, תודה 👍', '💰 מחירים ומנויים', '📞 שוחחו עם שני'] };
+      else if (t.includes('שבועיים') || t.includes('חצי חודש') || (t.includes('שבוע') && t.includes('לא חודש')))
+        result = { text: 'מנוי של שבועיים לא קיים אצלנו — המנויים הם חודשיים בלבד 📋\n\nאם יודעים שהחודש יהיה עמוס — עדיף לחכות לחודש הבא ולהתחיל ב-1.\nככה מקבלים את כל החודש ולא משלמים על ימים שלא מגיעים.', qr: ['💰 מחירים ומנויים', '✅ רוצה להירשם!', '📞 שוחחו עם שני'] };
+      else if (["הקפאה","להקפיא","לא מגיעה לחודש","הפסקה","להפסיק זמנית"].some(w => t.includes(w)))
+        result = { text: 'מקווה שתמשיך/י בתנועה כמה שניתן 💪\n\nרשמו לי כאן מאיזה תאריך ועד מתי תרצה/י שנקפיא.\nשני תאשר לך את זה בהקדם ❤️', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+
+      // ── Arbox / אפליקציה ──
+      else if (["arbox","אפליקציה","להתחבר","לא מתחדש","מכסה","אשראי","כרטיס אשראי"].some(w => t.includes(w)))
+        result = { text: 'בואי ננסה לפתור את זה 🔧\n\n• לא מתחברת? צאי ולהיכנסי שוב — ודאי שזה המייל שנרשמת איתו.\n• המכסה לא מתחדשת? המערכת סופרת גם רישומים עתידיים.\n• לעדכן כרטיס אשראי? Arbox → הגדרות → אמצעי תשלום.\n\nאם זה לא עוזר — שני תפתור לך תוך דקה!', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+      else if (t.includes('לא יכולה להתחבר') || t.includes('לא מתחברת'))
+        result = { text: 'נסי לצאת ולהיכנס שוב 🔄\nודאי שאת משתמשת במייל שנרשמת איתו לסטודיו.\n\nאם זה לא עוזר — שני תפתור לך את זה תוך דקה!', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+      else if (t.includes('מכסה לא מתחדשת') || t.includes('המכסה'))
+        result = { text: 'המערכת סופרת גם רישומים עתידיים 📊\nאם ביטלת אימון — ייתכן שתצטרכי לחכות שהמכסה תתעדכן.\n\nאם הבעיה נמשכת — שני כאן!', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+      else if (t.includes('עדכון כרטיס') || t.includes('אשראי'))
+        result = { text: 'כדי לעדכן כרטיס אשראי:\nפתחי את Arbox → הגדרות → אמצעי תשלום → עדכני שם.\nזה חוסך לנו שיחת טלפון 😊', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+
+      // ── מיקום וכניסה ──
+      else if (["איך מגיעים","קוד שער","קוד כניסה","מיקום","וויז","waze","כתובת","איפה"].some(w => t.includes(w)))
+        result = { text: 'הסטודיו נמצא בחד נס 📍\n\n🔑 קוד שער: 2580#\n\n🛡️ יש לנו מקלט מסודר ובטוח בתוך הסטודיו (באזור השירותים) ❤️', qr: ['🕐 שעות ואימונים', '💰 מחירים ומנויים', '📞 שוחחו עם שני'] };
+      else if (t.includes('מרחב מוגן') || t.includes('מקלט'))
+        result = { text: 'יש לנו מקלט מסודר ובטוח בתוך הסטודיו (באזור השירותים) ❤️\nאנחנו כאן בשבילכם.', qr: ['🏠 חזרה לתפריט'] };
+
+      // ── ליווי תזונתי ──
+      else if (["תזונה","תזונתי","ליווי תזונה","תפריט","דיאטה","מדידות"].some(w => t.includes(w)))
+        result = { text: 'יש לנו תכנית ליווי תזונתי מלאה 🥗\n\n✅ תכנית 60 יום:\n• מדידות אישיות בתחילה ובסיום\n• תפריט מותאם אישית\n• פגישות מעקב כל שבועיים\n\n💰 עלות: 1,200 ₪', qr: ['✅ רוצה פרטים!', '📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+
+      // ── הגעה ראשונה / מה להביא ──
+      else if (["מה להביא","הגעה ראשונה","הכנה","גרביים","בקבוק מים"].some(w => t.includes(w)))
+        result = { text: 'מה להביא לאימון:\n💧 בקבוק מים\n🧦 גרביים (לפילאטיס)\n👟 נעליים סגורות (לחדר כושר)\n🛁 מגבת קטנה\n\nהכל שם — הסטודיו מסודר ונקי ❤️', qr: ['📍 מיקום וקוד כניסה', '💰 מחירים ומנויים', '✅ רוצה להירשם!'] };
+
+      // ── מנוי צופרים — חבר מביא חבר ──
+      else if (["חבר מביא","צופרים","הפניה","להביא חברה","חברה שתבוא"].some(w => t.includes(w)))
+        result = { text: 'תכנית ההפניות שלנו 🤝\n\nהביאי חברה — ותקבלי חצי חודש מתנה!\nהחברה צריכה להישאר 3 חודשים.\nאת אחראית לתזכר אותנו 😉', qr: ['✅ רוצה להירשם!', '📞 שוחחו עם שני'] };
+
+      // ── הבנתי / תודה ──
+      else if (t.includes('הבנתי') || t.includes('תודה') || t.includes('אוקיי') || t.includes('בסדר'))
+        result = { text: 'בכיף! 😊 אני כאן אם יש שאלות נוספות.', qr: ['💰 מחירים ומנויים', '🕐 שעות ואימונים', '🏠 חזרה לתפריט'] };
+
+      // ── לוז מלא ──
+      else if (t.includes('לוז מלא') || t.includes('לוח זמנים מלא'))
+        result = { text: 'הלוז המלא נמצא באתר שלנו ומתעדכן שבועית 📅\n\nלשריון מקום ספציפי — כדאי לדבר עם שני ישירות.', qr: ['📞 שוחחו עם שני', '✅ רוצה להירשם!'] };
+
+      // ── רוצה פרטים (תזונה/ליווי) ──
+      else if (t.includes('רוצה פרטים') || t.includes('ספרו עוד'))
+        result = { text: 'שני תשמח לפרט לך על כל האפשרויות! 💪\nהיא זמינה לשאלות בשעות הפעילות.', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+
+      // ── follow-up מחירים
+      else if (t.includes('פעם אחת') || t.includes('290'))
+        result = { text: 'לפעם בשבוע — 290 ₪ לחודש 🙌\n\nאיך את עם פילאטיס מכשירים או אימון כוח/פונקציונלי?', qr: ['🧘 ספרו על פילאטיס', '🏋️ ספרו על פונקציונלי', '✅ רוצה להירשם!'] };
+      else if (t.includes('פעמיים') || t.includes('480'))
+        result = { text: 'לפעמיים בשבוע — 480 ₪ לחודש 💪\n\nאיך את עם פילאטיס מכשירים או אימון כוח/פונקציונלי?', qr: ['🧘 ספרו על פילאטיס', '🏋️ ספרו על פונקציונלי', '✅ רוצה להירשם!'] };
+      else if (t.includes('3+') || t.includes('640') || t.includes('שלוש') || t.includes('3 פעמ'))
+        result = { text: 'ל-3 פעמים ומעלה בשבוע — 640 ₪ לחודש 🔥\nהכי משתלם למי שמגיעה בקביעות!\n\nכדאי לדבר עם שני לבנות לך תוכנית מותאמת.', qr: ['📞 שוחחו עם שני', '✅ רוצה להירשם!'] };
+      else if (t.includes('עוד לא') || t.includes('לא יודעת'))
+        result = { text: 'בכיף! 😊 אין לחץ.\nכדאי להתחיל בפעם אחת בשבוע ולראות איך זה הולך.\n\nרוצה לשמוע יותר על הסטודיו?', qr: ['🔥 על הVIBE', '💰 מחירים ומנויים', '📞 שוחחו עם שני'] };
+
+      // follow-up סוגי אימונים
+      else if (t.includes('ספרו על פילאטיס') || t.includes('פילאטיס מכשירים') || t.includes('reformer'))
+        result = { text: 'פילאטיס מכשירים אצלנו זה חוויה אחרת לגמרי 🧘‍♀️\nקבוצות של עד 8 מתאמנים — מחזק ליבה, משפר יציבה, נותן תחושה מדהימה בגוף ובחיים.\n\nמותאם לכל הרמות עם יחס אישי ❤️', qr: ['💰 כמה עולה?', '✅ רוצה לנסות!', '📞 שוחחו עם שני'] };
+      else if (t.includes('ספרו על פונקציונלי') || t.includes('פונקציונלי'))
+        result = { text: 'אימון פונקציונלי/כוח זה הבסיס של הכל 🏋️‍♀️\nכוח, סיבולת, שריפת שומן — עם ציוד מקצועי ושני לצד.\n\nכל אימון שונה, תמיד מאתגר, תמיד כיף!', qr: ['💰 כמה עולה?', '✅ רוצה לנסות!', '📞 שוחחו עם שני'] };
+      else if (t.includes('רוצה לנסות') || t.includes('רוצה להירשם') || t.includes('להירשם'))
+        result = { text: 'מעולה! 🎉 שני תשמח לדבר איתך.\nהיא תבנה לך תוכנית שמתאימה בדיוק לך.\n\n📞 052-4532215', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+      else if (t.includes('על הvibe') || t.includes('vibe'))
+        result = { text: 'אצלנו ב-Harim Studio הכל על הVIBE 🔥\n\nאווירה ממכרת, פלייסילטים מעודכנים ומחשמלים —\nצוות ברמה גבוהה עם יחס בגובה העיניים 🎵\n\nקבוצות קטנות עד 8. אישי. חם. ממכר.', qr: ['💰 מחירים ומנויים', '✅ רוצה לנסות!', '📞 שוחחו עם שני'] };
+      else if (t.includes('חזרה לתפריט') || t.includes('תפריט'))
+        result = { text: 'היי ❤️ אני כאן — במה אוכל לעזור?', qr: ['💰 מחירים ומנויים', '🕐 שעות ואימונים', '🏥 קופות חולים', '📋 שאלה על המנוי שלי'] };
+      else if (t.includes('ומה עם שבועיים') || t.includes('שבועיים'))
+        result = { text: 'מנוי של שבועיים לא קיים אצלנו — המנויים הם חודשיים בלבד 📋\n\nאם יודעים שהחודש יהיה עמוס — עדיף לחכות לחודש הבא ולהתחיל ב-1.\nככה מקבלים את כל החודש ולא משלמים על ימים שלא מגיעים.', qr: ['💰 מחירים ומנויים', '✅ רוצה להירשם!', '📞 שוחחו עם שני'] };
+      else if (t.includes('שלחי לוז') || t.includes('לוז מלא'))
+        result = { text: 'הלוז המלא נמצא באתר שלנו ומתעדכן שבועית 📅\n\nלשריון מקום ספציפי — כדאי לדבר עם שני ישירות.', qr: ['📞 שוחחו עם שני', '✅ רוצה להירשם!'] };
+      else if (t.includes('מיקום וקוד') || t.includes('קוד כניסה') || t.includes('קוד שער'))
+        result = { text: 'הסטודיו נמצא בחד נס 📍\n\n🔑 קוד שער: 2580#\n\n🛡️ יש לנו מקלט מסודר ובטוח בתוך הסטודיו (באזור השירותים) ❤️', qr: ['🕐 שעות ואימונים', '💰 מחירים ומנויים', '📞 שוחחו עם שני'] };
+      else if (t.includes('קחי אותי לשני') || t.includes('דברי עם שני') || t.includes('שוחחו עם שני') || t.includes('שני') || t.includes('נציג') || t.includes('אנושי') || t.includes('לדבר') || t.includes('בן אדם') || t.includes('מנהלת'))
+        result = { text: 'אני מעביר את ההודעה לשני הרים 💪🏻\nהיא תחזור אלייך ברגע שתסיים את הסשן בסטודיו ❤️\n\n📞 אפשר גם ישר: 052-4532215', qr: ['🏠 חזרה לתפריט'] };
+
+      // ── keyword matching גנרי ──
+      else if (["שלום","היי","הי","hello","hi","yo","בוקר","ערב"].some(w => t.includes(w)))
+        result = { text: 'היי ❤️ מה שלומך?\n\nאני הבוט של שני — אענה מיד על רוב השאלות.\n\nבמה אוכל לעזור?', qr: ['💰 מחירים ומנויים', '🕐 שעות ואימונים', '🏥 קופות חולים', '📋 שאלה על המנוי שלי'] };
+      else if (["מחיר","כמה","עלות","חבילה","מבצע"].some(w => t.includes(w)))
+        result = { text: 'טווח מחירים נע בין 230–700 ₪ ותלוי בכמות הפעמים בשבוע 💰\n\nבאיזה ימים נוח לך יותר להתאמן והאם יותר בשעות הבוקר או הערב?', qr: ['☀️ בוקר', '🌙 ערב', '📅 גמיש/ה', 'עוד לא יודע/ת'] };
+      else if (["מכבי","קופה","קופות","ביטוח","כללית","לאומית","מאוחדת"].some(w => t.includes(w)))
+        result = { text: '✅ מכבי — כן, מאשרים (חדר כושר בלבד)\n❌ כללית / מאוחדת / לאומית — לא\n\n⚠️ פילאטיס מכשירים לא נכלל בהשתתפות מכבי.', qr: ['💰 מחירים ומנויים', '✅ רוצה להירשם!'] };
+      else if (["לבטל","ביטול","מבטל","לא מגיעה","שעת"].some(w => t.includes(w)))
+        result = { text: 'כללי הביטול:\n❗ אימון ערב — לבטל עד 4 שעות לפני\n❗ אימון בוקר — לבטל עד 12 שעות לפני\n⏰ ביטול מאוחר — ניתן להירשם לאימון אחר באותו יום 🙌', qr: ['💰 מחירים ומנויים', '📞 שוחחו עם שני'] };
+      else if (["מנוי","חברות","להצטרף","מתחדש"].some(w => t.includes(w)))
+        result = { text: 'המנוי מתחדש אוטומטית בכל ראשון לחודש 📅\n\nהחיוב הראשון הוא יחסי — עד ה-1 לחודש הבא.\nאחר כך חיוב קבוע בכל 1 לחודש.\n\n💡 ללא התחייבות!\n\nרוצות לבטל? חשוב לעדכן עד שבועיים לפני ה-1 לחודש.', qr: ['📋 כללי ביטול אימון', '💰 מחירים ומנויים', '✅ רוצה להירשם!'] };
+      else if (["שעות","לוז","מתי","אימון","סוגים"].some(w => t.includes(w)))
+        result = { text: 'אצלנו שני סוגי אימונים 💪\n🧘 פילאטיס מכשירים — לכל הרמות\n🏋️ אימון פונקציונלי/כוח — מאתגר וכיף\n\nשעות: בוקר / צהריים / ערב, א׳–שישי.', qr: ['🧘 ספרו על פילאטיס', '🏋️ ספרו על פונקציונלי', '💰 מחירים'] };
+      else {
+        // fallback — count repeats and offer Shani after 3
+        fallbackCount++;
+        if (fallbackCount >= 3) {
+          fallbackCount = 0;
+          result = { text: 'נראה שאני לא עוזר/ת מספיק 😅\nבואו נעביר אתכם ישר לשני — היא תענה לכם על הכל!\n\n📞 052-4532215', qr: ['📞 שוחחו עם שני', '🏠 חזרה לתפריט'] };
+        } else {
+          result = { text: 'אופס, לא הצלחתי להבין 😅\nרוצה שאחזיר אותך לתפריט הראשי?\nאו שאעביר לשני ישירות?\n\nנסי לכתוב: מחירים / שעות / קופות / מנוי / ביטול / מיקום', qr: ['🏠 חזרה לתפריט', '💰 מחירים ומנויים', '📞 שוחחו עם שני'] };
+        }
+        return result;
+      }
+
+      // valid match — reset fallback counter
+      fallbackCount = 0;
+      return result;
+    }
+
+    // ─── Chat engine ─────────────────────────────
+    let busy = false;
+    let fallbackCount = 0;
+
+    function resetChat() {
+      if (busy) return;
+      fallbackCount = 0;
+      document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('chatMsgs').innerHTML = `
+        <div class="empty-state" id="emptyState">
+          <div class="e-icon">💪</div>
+          <h3>בחרו תרחיש לדמו</h3>
+          <p>לחצו על אחד הכפתורים<br>כדי להפעיל שיחה לדוגמה</p>
+        </div>`;
+      document.getElementById('qrStrip').innerHTML = '';
+    }
+
+    async function runScenario(s) {
+      if (busy) return;
+      busy = true;
+      fallbackCount = 0;
+
+      document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('sb-' + s.id).classList.add('active');
+
+      const box = document.getElementById('chatMsgs');
+      box.innerHTML = '';
+      document.getElementById('qrStrip').innerHTML = '';
+
+      const today = new Date();
+      const divider = document.createElement('div');
+      divider.className = 'date-divider';
+      divider.innerHTML = `<span>${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}</span>`;
+      box.appendChild(divider);
+
+      let idx = 0;
+      for (const msg of s.convo) {
+        await sleep(msg.delay || (msg.from === 'customer' ? 350 : 150));
+
+        if (msg.from !== 'customer') {
+          const typer = addTyping(box);
+          await sleep(msg.typing || 1200);
+          typer.remove();
+        }
+
+        addBubble(box, msg, idx++);
+        if (msg.qr) { await sleep(120); addQuickReplies(box, msg.qr); }
+        await sleep(120);
+      }
+
+      busy = false;
+    }
+
+    function addTyping(box) {
+      const el = document.createElement('div');
+      el.className = 'typing-row';
+      el.innerHTML = `<div class="typing-bub">
+        <div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>
+      </div>`;
+      box.appendChild(el);
+      scrollBottom(box);
+      return el;
+    }
+
+    function addBubble(box, msg, idx) {
+      const row = document.createElement('div');
+      row.className = 'msg-row ' + msg.from;
+      const t = msgTime(idx);
+
+      if (msg.from === 'system') {
+        row.innerHTML = `<div class="system-pill">${safe(msg.text)}</div>`;
+      } else if (msg.from === 'bot') {
+        row.innerHTML = `<div class="bubble">${safe(msg.text)}<div class="msg-meta"><span class="msg-time">${t}</span></div></div>`;
+      } else {
+        row.innerHTML = `<div class="bubble">${safe(msg.text)}<div class="msg-meta"><span class="msg-time">${t}</span><span class="ticks">✓✓</span></div></div>`;
+      }
+
+      box.appendChild(row);
+      scrollBottom(box);
+    }
+
+    function addQuickReplies(box, replies) {
+      const strip = document.getElementById('qrStrip');
+      strip.innerHTML = ''; // נקה כפתורים קודמים
+      replies.forEach(r => {
+        const btn = document.createElement('button');
+        btn.className = 'qr-chip';
+        btn.textContent = r;
+        btn.addEventListener('click', () => {
+          if (busy) return;
+          strip.innerHTML = ''; // מנקה אחרי לחיצה
+          const emptyEl = document.getElementById('emptyState');
+          if (emptyEl) emptyEl.remove();
+          addBubble(box, { from: 'customer', text: r }, 0);
+          setTimeout(async () => {
+            const typer = addTyping(box);
+            await sleep(1300);
+            typer.remove();
+            const reply = autoReply(r);
+            addBubble(box, { from: 'bot', text: reply.text }, 1);
+            if (reply.qr) addQuickReplies(box, reply.qr);
+          }, 400);
+        });
+        strip.appendChild(btn);
+      });
+      scrollBottom(box);
+    }
+
+    function scrollBottom(el) {
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+        // גלילה נוספת אחרי animation (250ms) — מבטיח שQR chips נראות
+        setTimeout(() => { el.scrollTop = el.scrollHeight; }, 280);
+      });
+    }
+
+    function msgTime(offset) {
+      const d = new Date();
+      d.setMinutes(d.getMinutes() - 8 + offset * 2);
+      return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+    }
+
+    function safe(txt) {
+      return txt
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/\n/g,'<br>');
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  </script>
+</body>
+</html>
