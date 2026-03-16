@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הרים בוט — אישור תכנים | שני</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:     #030000;
+    --green:  #63DD00;
+    --purple: #845AEC;
+    --white:  #FFFFFF;
+    --muted:  #D5D5D5;
+    --dim:    #888888;
+    --card:   #0D0D0D;
+    --border: #1E1E1E;
+  }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    background: linear-gradient(180deg, #0A0A0A 0%, var(--bg) 100%);
+    border-bottom: 2px solid var(--green);
+    padding: 28px 20px 22px;
+    text-align: center;
+  }
+
+  .hero-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--green);
+    font-size: 22px; font-weight: 900;
+    color: var(--bg);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-size: 26px; font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .hero h1 span { color: var(--green); }
+
+  .hero-sub {
+    font-size: 13.5px; color: var(--dim);
+    margin-bottom: 18px;
+  }
+
+  .hero-box {
+    background: rgba(99,221,0,0.08);
+    border: 1px solid rgba(99,221,0,0.25);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: right;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .hero-box p {
+    font-size: 14px; line-height: 1.7; color: var(--muted);
+  }
+  .hero-box strong { color: var(--green); }
+
+  /* ── SECTION ── */
+  .section-label {
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--dim);
+    padding: 22px 20px 8px;
+  }
+
+  /* ── CARDS ── */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 14px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:focus-within { border-color: rgba(99,221,0,0.4); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .card-num {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(99,221,0,0.1);
+    border: 1px solid rgba(99,221,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+    color: var(--green);
+    font-family: monospace;
+  }
+
+  .card-title {
+    flex: 1;
+    font-size: 15.5px; font-weight: 700;
+    color: var(--white);
+  }
+
+  .card-chevron {
+    font-size: 18px; color: var(--dim);
+    transition: transform 0.22s;
+    flex-shrink: 0;
+  }
+  .card.open .card-chevron { transform: rotate(90deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 16px 16px;
+  }
+  .card.open .card-body { display: block; }
+
+  /* Triggers */
+  .triggers-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--dim); margin-bottom: 8px;
+  }
+
+  .triggers {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .trigger-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid #2A2A2A;
+    border-radius: 100px;
+    font-size: 12px; color: var(--muted);
+    padding: 4px 11px;
+  }
+
+  /* Answer */
+  .answer-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--dim); margin-bottom: 8px;
+  }
+
+  .answer-bubble {
+    background: #111;
+    border-right: 2.5px solid var(--green);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    font-size: 14px; line-height: 1.75;
+    color: var(--muted);
+    white-space: pre-line;
+  }
+
+  .answer-bubble strong { color: var(--white); }
+  .answer-bubble .ok   { color: #63DD00; }
+  .answer-bubble .no   { color: #FF5555; }
+  .answer-bubble .warn { color: #FFAA00; }
+
+  /* Note hint */
+  .note-hint {
+    margin-top: 12px;
+    font-size: 11.5px;
+    color: #444;
+    text-align: center;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 28px 20px 16px;
+  }
+
+  .footer-box {
+    background: rgba(132,90,236,0.08);
+    border: 1px solid rgba(132,90,236,0.25);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .footer-box p { font-size: 13.5px; line-height: 1.8; color: var(--muted); }
+  .footer-box strong { color: #9B72FF; }
+
+  .footer-meta {
+    font-size: 11px; color: #333;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logo">H</div>
+  <h1>HARIM <span>BOT</span></h1>
+  <p class="hero-sub">שני — קראי ושלחי לי הודעה קולית 🎤</p>
+  <div class="hero-box">
+    <p>
+      לפניך <strong>16 קטגוריות שאלות</strong> שהבוט יודע לענות.<br>
+      לחצי על כל קטגוריה כדי לראות מה הבוט אומר בדיוק.<br><br>
+      <strong>איך לאשר?</strong> שלחי לי הודעה קולית עם:<br>
+      ✅ <strong>מספר הכרטיס + "מאושר"</strong> — אם התשובה טובה<br>
+      ✏️ <strong>מספר הכרטיס + השינוי הרצוי</strong> — אם משהו לשנות
+    </p>
+  </div>
+</div>
+
+<p class="section-label">תכני הבוט לאישור</p>
+
+<!-- CARDS -->
+<div class="cards">
+
+  <div class="card" id="c1">
+    <div class="card-header" onclick="toggle('c1')">
+      <div class="card-num">01</div>
+      <div class="card-title">ברכת פתיחה</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">היי</span>
+        <span class="trigger-chip">שלום</span>
+        <span class="trigger-chip">בוקר / ערב טוב</span>
+        <span class="trigger-chip">hello / hi</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">היי מהממת! 👋 איזה כיף שהגעת לסטודיו הרים — הבית השני שלך בחד נס ❤️
+
+אני הבוט של שני — אענה לך מיד על רוב השאלות.
+
+במה אוכל לעזור?</div>
+    </div>
+  </div>
+
+  <div class="card" id="c2">
+    <div class="card-header" onclick="toggle('c2')">
+      <div class="card-num">02</div>
+      <div class="card-title">מבצע היכרות</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">יש מבצע?</span>
+        <span class="trigger-chip">199 ₪</span>
+        <span class="trigger-chip">מבצע פתיחה</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">כן!! 🎉 מבצע היכרות ב-199 ₪ בלבד לחודש!
+
+קומפלקס אימונים מחודש בחד נס 🔥
+כל מה שהגוף והנפש שלך צריכים —
+גם חדר כושר וגם פילאטיס מכשירים.
+
+אנחנו מתחדשים ואתם מרוויחים! ✨
+
+<span class="warn">*בכפוף לתנאי תקנון המבצע בסטורי הרים</span></div>
+    </div>
+  </div>
+
+  <div class="card" id="c3">
+    <div class="card-header" onclick="toggle('c3')">
+      <div class="card-num">03</div>
+      <div class="card-title">מחירים ומנויים</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">כמה עולה?</span>
+        <span class="trigger-chip">מחיר מנוי</span>
+        <span class="trigger-chip">חבילות</span>
+        <span class="trigger-chip">תעריף</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">המחירים נעים בין 290 ל-640 ₪ לחודש 💰
+הכל תלוי כמה פעמים בשבוע את מגיעה.
+
+🎉 מבצע היכרות: <strong>199 ₪ לחודש הראשון!</strong>
+
+כמה פעמים בשבוע את חושבת להגיע?</div>
+      <p class="answer-label" style="margin-top:12px">לאחר בחירה:</p>
+      <div class="answer-bubble">פעם אחת ← <strong>290 ₪</strong> לחודש
+פעמיים ← <strong>480 ₪</strong> לחודש
+3+ פעמים ← <strong>640 ₪</strong> לחודש</div>
+    </div>
+  </div>
+
+  <div class="card" id="c4">
+    <div class="card-header" onclick="toggle('c4')">
+      <div class="card-num">04</div>
+      <div class="card-title">סוגי אימונים — VIBE</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">מה יש אצלכם?</span>
+        <span class="trigger-chip">מה אתם מציעים?</span>
+        <span class="trigger-chip">סוגי אימונים</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">אצלנו ב-Harim Studio הכל על הVIBE 🔥
+
+אווירה ממכרת, פלייסילטים מחשמלים,
+צוות ברמה גבוהה עם יחס בגובה העיניים 🎵
+
+🧘 פילאטיס מכשירים — חיזוק, יציבה, גמישות. לכל הרמות.
+🏋️ אימון פונקציונלי / כוח — כוח, סיבולת, שריפת שומן.
+💪 חדר כושר — אימונים עם ציוד מקצועי.
+
+שעות: בוקר / צהריים / ערב, א׳–שישי.</div>
+    </div>
+  </div>
+
+  <div class="card" id="c5">
+    <div class="card-header" onclick="toggle('c5')">
+      <div class="card-num">05</div>
+      <div class="card-title">פילאטיס מכשירים</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">ספרי על פילאטיס</span>
+        <span class="trigger-chip">Reformer</span>
+        <span class="trigger-chip">פלאטיס</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">פילאטיס מכשירים אצלנו זה חוויה אחרת לגמרי 🧘‍♀️
+
+קבוצות של עד 6 מתאמנות, מכשירי Reformer, עם שני צמוד.
+
+מחזק ליבה, משפר יציבה, ונותן תחושה מדהימה —
+מתאים לכל רמה.
+
+מבצע היכרות כרגע: <strong>199 ₪ לחודש הראשון!</strong> 🎉</div>
+    </div>
+  </div>
+
+  <div class="card" id="c6">
+    <div class="card-header" onclick="toggle('c6')">
+      <div class="card-num">06</div>
+      <div class="card-title">כללי מנוי</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">איך עובד המנוי?</span>
+        <span class="trigger-chip">מתחדש אוטומטית?</span>
+        <span class="trigger-chip">חיוב</span>
+        <span class="trigger-chip">חידוש</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">המנוי מתחדש אוטומטית בכל ראשון לחודש 📅
+
+החיוב הראשון הוא יחסי — עד ה-1 לחודש הבא.
+אחר כך חיוב קבוע בכל 1 לחודש.
+
+💡 ללא התחייבות!
+
+רוצות לבטל או לשנות מנוי? חשוב לעדכן עד שבועיים לפני ה-1 לחודש.
+לא ניתן לזכות על חיוב שכבר בוצע — כדאי להתארגן מראש ✨</div>
+    </div>
+  </div>
+
+  <div class="card" id="c7">
+    <div class="card-header" onclick="toggle('c7')">
+      <div class="card-num">07</div>
+      <div class="card-title">מנוי שבועיים — אין כזה</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">שבועיים בלבד?</span>
+        <span class="trigger-chip">חצי חודש</span>
+        <span class="trigger-chip">לא חודש שלם</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">מנוי של שבועיים לא קיים אצלנו — המנויים הם חודשיים בלבד 📋
+
+אם את יודעת שהחודש יהיה עמוס — עדיף לחכות לחודש הבא ולהתחיל ב-1.
+ככה מקבלות את כל החודש ולא משלמות על ימים שלא תגיעי.</div>
+    </div>
+  </div>
+
+  <div class="card" id="c8">
+    <div class="card-header" onclick="toggle('c8')">
+      <div class="card-num">08</div>
+      <div class="card-title">העברת מנוי — לא ניתן</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">להעביר לאחות?</span>
+        <span class="trigger-chip">חברה במקומי</span>
+        <span class="trigger-chip">שתבוא במקומי</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">המנוי הוא אישי ולא ניתן להעביר לאף אחד אחר 🙅‍♀️
+גם לא לאחות, חברה, או בת זוג — אפילו לשיעור אחד.
+
+זה כדי לשמור על האיכות והמקום בכל שיעור.</div>
+    </div>
+  </div>
+
+  <div class="card" id="c9">
+    <div class="card-header" onclick="toggle('c9')">
+      <div class="card-num">09</div>
+      <div class="card-title">ביטול אימון</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">איך מבטלים?</span>
+        <span class="trigger-chip">לא יכולה להגיע</span>
+        <span class="trigger-chip">ביטול מאוחר</span>
+        <span class="trigger-chip">שעת ביטול</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">כללי הביטול אצלנו פשוטים 📋
+
+✅ אפשר להירשם לאימון בכל עת
+<span class="warn">❗ אימון ערב — לבטל עד 4 שעות לפני</span>
+<span class="warn">❗ אימון בוקר — לבטל עד 12 שעות לפני</span>
+
+⏰ ביטלת מאוחר?
+אפשר להירשם לאימון אחר באותו יום במקום —
+ולא להיות מחויבת פעמיים 🙌</div>
+    </div>
+  </div>
+
+  <div class="card" id="c10">
+    <div class="card-header" onclick="toggle('c10')">
+      <div class="card-num">10</div>
+      <div class="card-title">הקפאת מנוי</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">רוצה להקפיא</span>
+        <span class="trigger-chip">לא מגיעה לחודש</span>
+        <span class="trigger-chip">להפסיק זמנית</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">מצטערת לשמוע שאת לא מגיעה! 🫂
+
+רשמי לי:
+1. שם מלא
+2. תאריך התחלת ההקפאה
+3. תאריך חזרה משוערת
+
+שני תאשר לך את זה בהקדם ❤️</div>
+    </div>
+  </div>
+
+  <div class="card" id="c11">
+    <div class="card-header" onclick="toggle('c11')">
+      <div class="card-num">11</div>
+      <div class="card-title">קופות חולים</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">מכבי מאשרת?</span>
+        <span class="trigger-chip">כללית?</span>
+        <span class="trigger-chip">ביטוח / קופה</span>
+        <span class="trigger-chip">השתתפות</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">קופות חולים? כן — אבל עם מגבלה אחת חשובה 👇
+
+<span class="ok">✅ מכבי — כן, מאשרים</span>
+<span class="no">❌ כללית / מאוחדת / לאומית — לא</span>
+
+<span class="warn">⚠️ חשוב: ההשתתפות של מכבי היא לחדר כושר בלבד.
+פילאטיס מכשירים לא נכלל — גם אם יש לך מכבי.</span></div>
+    </div>
+  </div>
+
+  <div class="card" id="c12">
+    <div class="card-header" onclick="toggle('c12')">
+      <div class="card-num">12</div>
+      <div class="card-title">תקלות Arbox</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">בעיה באפליקציה</span>
+        <span class="trigger-chip">לא מתחברת</span>
+        <span class="trigger-chip">מכסה לא מתחדשת</span>
+        <span class="trigger-chip">כרטיס אשראי</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">בואי ננסה לפתור את זה 🔧
+
+🔐 לא מתחברת?
+נסי לצאת ולהיכנס שוב — ודאי שאת משתמשת במייל שנרשמת איתו.
+
+📊 מכסת אימונים לא מתחדשת?
+המערכת סופרת גם רישומים עתידיים — אם ביטלת, חכי שתתעדכן.
+
+💳 לעדכן כרטיס אשראי?
+Arbox ← הגדרות ← אמצעי תשלום ← עדכני שם.</div>
+    </div>
+  </div>
+
+  <div class="card" id="c13">
+    <div class="card-header" onclick="toggle('c13')">
+      <div class="card-num">13</div>
+      <div class="card-title">מיקום וכניסה</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">איפה אתם?</span>
+        <span class="trigger-chip">קוד שער?</span>
+        <span class="trigger-chip">איך מגיעים?</span>
+        <span class="trigger-chip">כתובת</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">הסטודיו נמצא בחד נס 📍
+
+🔑 קוד שער: <strong>2580#</strong>
+
+🛡️ יש לנו מקלט מסודר ובטוח בתוך הסטודיו (באזור השירותים) ❤️
+
+שעות: בוקר / צהריים / ערב, א׳–שישי.</div>
+    </div>
+  </div>
+
+  <div class="card" id="c14">
+    <div class="card-header" onclick="toggle('c14')">
+      <div class="card-num">14</div>
+      <div class="card-title">ליווי תזונתי</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">יש תזונה?</span>
+        <span class="trigger-chip">דיאטה</span>
+        <span class="trigger-chip">תפריט</span>
+        <span class="trigger-chip">תזונתי</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">כן! יש לנו תכנית ליווי תזונתי מלאה 🥗
+
+✅ תכנית 60 יום:
+• מדידות אישיות בתחילה ובסיום
+• תפריט מותאם אישית
+• פגישות מעקב כל שבועיים
+
+💰 עלות: <strong>1,200 ₪</strong>
+
+רוצה לשמוע יותר?</div>
+    </div>
+  </div>
+
+  <div class="card" id="c15">
+    <div class="card-header" onclick="toggle('c15')">
+      <div class="card-num">15</div>
+      <div class="card-title">מה להביא לאימון?</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">מה להביא?</span>
+        <span class="trigger-chip">הגעה ראשונה</span>
+        <span class="trigger-chip">הכנה לאימון</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">כל הכבוד שאת מגיעה! 🎉
+
+מה להביא לאימון:
+💧 בקבוק מים
+🧦 גרביים (לפילאטיס)
+👟 נעליים סגורות (לחדר כושר)
+🛁 מגבת קטנה
+
+הכל שם — הסטודיו מסודר ונקי ❤️</div>
+    </div>
+  </div>
+
+  <div class="card" id="c16">
+    <div class="card-header" onclick="toggle('c16')">
+      <div class="card-num">16</div>
+      <div class="card-title">העברה לשני</div>
+      <span class="card-chevron">›</span>
+    </div>
+    <div class="card-body">
+      <p class="triggers-label">הלקוחה כותבת:</p>
+      <div class="triggers">
+        <span class="trigger-chip">רוצה לדבר עם שני</span>
+        <span class="trigger-chip">בן אדם</span>
+        <span class="trigger-chip">דחוף</span>
+        <span class="trigger-chip">נציג</span>
+      </div>
+      <p class="answer-label">הבוט עונה:</p>
+      <div class="answer-bubble">אני מעביר את ההודעה לשני המהממת 💪🏻
+היא תחזור אלייך ברגע שתסיים את הסשן בסטודיו ❤️
+
+📞 אפשר גם ישר: <strong>052-4532215</strong></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-box">
+    <p>
+      <strong>איך לאשר?</strong><br>
+      שלחי לי הודעה קולית עם מספר הכרטיס.<br>
+      לדוגמה: <strong>"כרטיס 3 מאושר, כרטיס 11 — שתשמיטי את הכללית"</strong>
+    </p>
+  </div>
+  <p class="footer-meta">Kopel.AI × הרים סטודיו × מרץ 2026</p>
+</div>
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
